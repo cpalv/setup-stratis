@@ -113,11 +113,15 @@ PARTS
 
 	stratis key set --capture-key $keyname
 	check_stratis_fs "root" || create_stratis_fs "$devicefmt"4 $keyname root rfs 
+
 	
 	mount /dev/stratis/root/rfs "$install_root"
+
+	mk_required_dirs
+
 	mount "$devicefmt"1 $install_root/boot
 	mount "$devicefmt"2 $install_root/boot/efi
-	
+
 	boot=`blkid -p --output export "$devicefmt"1 | grep -E '^UUID'`
 	efi=`blkid -p --output export "$devicefmt"2 | grep -E '^UUID'`
 	rid=`stratis pool list --name root | grep UUID | cut -d' ' -f 2`
@@ -139,7 +143,6 @@ swap_crypt /dev/disk/by-id/nvme-$partid-part3 /dev/urandom swap,cipher=aes-cbc-e
 	elif [[ "${device}" =~ "/dev/sd" ]]; then
 		printf "# Crypttab
 swap_crypt /dev/disk/by-id/ata-$partid-part3 /dev/urandom swap,cipher=aes-cbc-essiv:sha256,size=256\n" > $install_root/etc/crypttab
-
 
 	fi
 	chmod 600 $install_root/etc/crypttab
@@ -164,7 +167,6 @@ systemctl start stratisd
 
 wipefs -a $device
 
-mk_required_dirs
 format_disk
 
 mount --types proc /proc $install_root/proc

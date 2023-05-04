@@ -17,7 +17,7 @@ you're prefered desktop environment.
 ## Additional utilites
 
 1. recover-stratis.sh
-* incase you cannot boot from your disk
+    * incase you cannot boot from your disk
 
 ## Usage
 
